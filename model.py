@@ -4,26 +4,16 @@ import onnxruntime
 from PIL import Image
 from torchvision import transforms
 from torch import Tensor
-
+from pytorch_model import Classifier
 
 class Preprocessor:
     def __init__(self, img_size: int = 224) -> None:
         self.img_size = img_size
-        self.transform = transforms.Compose(
-            [
-                transforms.Resize(size=(img_size, img_size)),
-                transforms.ToTensor(),
-                transforms.Normalize(
-                    mean=[0.485, 0.456, 0.406],
-                    std=[0.229, 0.224, 0.225],
-                ),
-            ]
-        )
-
+        self.classifier = Classifier()
+        
     def __call__(self, img: Image.Image) -> Tensor:
-        img_tensor = self.transform(img)
-        return img_tensor.unsqueeze(0)
-
+        img = self.classifier.preprocess_numpy(img)
+        return torch.from_numpy(img)
 
 class OnnxModel:
     def __init__(self, onnx_file_path: str) -> None:
