@@ -307,7 +307,7 @@ class Classifier(nn.Module):
         img = crop(img)
         img = to_tensor(img)
         img = normalize(img)
-        return img
+        return img.numpy()
 
 
 if __name__ == "__main__":
