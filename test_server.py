@@ -2,12 +2,16 @@ import requests
 import argparse
 import os
 import time
+import numpy as np
+from urllib.parse import urlparse
+from io import BytesIO
 
 import requests
 from PIL import Image
-
 from model import OnnxModel, Preprocessor
-from utils import get_class_names
+
+preprocessor = Preprocessor()
+onnx_model = OnnxModel("model/model_optimized.onnx")
 
 def get_class_names():
     filename = "imagenet_class_names.txt"
@@ -25,12 +29,24 @@ def get_class_names():
         return class_names[:1000]
 
 
-def classify_image(image_path, onnx_model, preprocessor):
-    img = Image.open(image_path)
-    img_tensor = preprocessor(img)
-    output = onnx_model.predict(img_tensor)
-    class_idx = output.index(max(output))
-    class_name = get_class_names()[class_idx]
+def classify_image(image_path, onnx_model=onnx_model, preprocessor=preprocessor):
+    if not isinstance(image_path, str):
+        raise ValueError("Image path must be a string")
+
+    if urlparse(image_path).scheme in ['http', 'https']:
+        # Download the file if image_path is a URL
+        response = requests.get(image_path)
+        img = Image.open(BytesIO(response.content))
+    else:
+        # Use local file path if image_path is not a URL
+        if not os.path.isfile(image_path):
+            raise ValueError(f"Invalid file path: {image_path}")
+        img = Image.open(image_path)
+
+    img_processed = preprocessor(img)
+    output = onnx_model.predict(img_processed)
+    predicted_classes = np.argmax(output[0], axis=1)
+    class_name = get_class_names()[predicted_classes[0]]
     return class_name
 
 
@@ -45,7 +61,7 @@ if __name__ == '__main__':
 
     if args.test:
         images = [
-            ('images/n01440764_tench.jpeg', 'goldfish, Carassius auratus'),
+            ('images/n01440764_tench.jpeg', 'tench'),
             ('images/n01667114_mud_turtle.JPEG', 'mud turtle'),
         ]
         for image_path, expected_class in images:

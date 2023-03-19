@@ -33,9 +33,9 @@ def inference(request):
     except:
         model_inputs = request.json
 
-    output = user_src.inference(model_inputs)
+    class_name = user_src.inference(model_inputs)
 
-    return response.json(output)
+    return response.json(class_name)
 
 
 if __name__ == '__main__':

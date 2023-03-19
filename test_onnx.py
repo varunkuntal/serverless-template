@@ -10,10 +10,12 @@ MODEL_FILE = "model/model_optimized.onnx"
 INPUT_NODE = "input"
 OUTPUT_NODE = "output"
 
-all_tests_passed = True
+
 
 # Define the function to test the ONNX model
 def test_onnx_model():
+
+    all_tests_passed = True
     # Create an instance of the ONNX Runtime inference session
     session = onnxruntime.InferenceSession(MODEL_FILE)
     classifier = Classifier() 
@@ -22,17 +24,20 @@ def test_onnx_model():
     input_shape = session.get_inputs()[0].shape
     output_shape = session.get_outputs()[0].shape
 
-    # Test the model on the two example images
-    for image_file in ["images/n01440764_tench.jpeg", "images/n01667114_mud_turtle.JPEG"]:
+    image_list = ["images/n01440764_tench.jpeg", "images/n01667114_mud_turtle.JPEG"]
 
-        img = Image.open(image_file).convert("RGB")
+    # Test the model on the two example images
+    for image_file in image_list:
+
+        img = Image.open(image_file)
 
         # Preprocess the input image
-        img = np.array(classifier.preprocess_numpy(img))
+        img_preprocessed = classifier.preprocess_numpy(img)
+        img_preprocessed = np.expand_dims(img_preprocessed, axis=0)
 
-        img = np.array(img).transpose(2, 0, 1).reshape(input_shape)
-        # Run the model on the input image
-        output = session.run([OUTPUT_NODE], {INPUT_NODE: img})
+        output_names = [OUTPUT_NODE]
+        input_feed = {INPUT_NODE: img_preprocessed}
+        output = session.run(output_names, input_feed)
 
         # Get the predicted class index
         predicted_classes = np.argmax(output[0], axis=1)

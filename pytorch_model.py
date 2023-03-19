@@ -303,11 +303,13 @@ class Classifier(nn.Module):
         crop = transforms.CenterCrop((224, 224))
         to_tensor = transforms.ToTensor()
         normalize = transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+        #img = img.convert("RGB")
         img = resize(img)
         img = crop(img)
         img = to_tensor(img)
         img = normalize(img)
-        return img.numpy()
+        return img
+        #return img.numpy()
 
 
 if __name__ == "__main__":

@@ -1,26 +1,33 @@
-from transformers import pipeline
-import torch
+import onnxruntime
+from PIL import Image
+from model import Preprocessor, OnnxModel
+from test_server import classify_image
+import numpy as np
+
+preprocessor = None
+onnx_model = None
 
 # Init is ran on server startup
 # Load your model to GPU as a global variable here using the variable name "model"
 def init():
-    global model
-    
-    device = 0 if torch.cuda.is_available() else -1
-    model = pipeline('fill-mask', model='bert-base-uncased', device=device)
+    global preprocessor, model
+    preprocessor = Preprocessor()
+    model = OnnxModel('model/model_optimized.onnx')
+
 
 # Inference is ran for every server call
 # Reference your preloaded global model variable here.
 def inference(model_inputs:dict) -> dict:
-    global model
+    global preprocessor, model
 
     # Parse out your arguments
-    prompt = model_inputs.get('prompt', None)
-    if prompt == None:
-        return {'message': "No prompt provided"}
+    img_url = model_inputs.get('url', None)
+    
+    if img_url is None:
+        return {'message': 'No image URL provided'}
     
     # Run the model
-    result = model(prompt)
-
+    output = classify_image(img_url)
+    
     # Return the results as a dictionary
-    return result
+    return {'predictions': output}
