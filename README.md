@@ -1,6 +1,31 @@
 
 # 🍌 Banana Serverless
-## MTailor MLOPs assessment
+## MLOPs Practices
+
+Table of Contents
+=================
+
+1.  [Introduction](#introduction)
+2.  [Project Implementation](#project-implementation)
+3.  [Re-Creating a Virtual Environment with Python 3.9](#re-creating-a-virtual-environment-with-python-39)
+4.  [Convert PyTorch Model to ONNX](#convert-pytorch-model-to-onnx)
+5.  [Test ONNX Model with Test Cases](#test-onnx-model-with-test-cases)
+6.  [Test the deployed model on Banana dev using the API using `test_server.py`](#test-the-deployed-model-on-banana-dev-using-the-api-using-test_serverpy)
+7.  [Deploying the app to **banana.dev**](#deploying-the-app-to-bananadev)
+
+
+
+# Introduction 
+
+This repo productionizes an Imagenet pytorch model, convert it to ONNX and deploys it to banana.dev.
+
+## Model Details:
+
+- Model is designed to perform classification on an input Image.
+- PyTorch Implementation of model is present in pytorch_model.py, and weights were downloaded from the link: https://www.dropbox.com/s/b7641ryzmkceoc9/pytorch_model_weights.pth?dl=0
+- The model is trained on ImageNet Dataset [https://www.image-net.org]
+- The input to the model is an image of size 224x224, and the output is the array with probabilities for each class.
+- The length of the output array is equal to the number of classes [1000] in the ImageNet dataset.
 
 ## Project Implementation
 
