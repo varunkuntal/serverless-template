@@ -3,9 +3,9 @@ import json
 import argparse
 import time
 import os
-from dotenv import load_env
+from dotenv import load_dotenv
 
-load_env()
+load_dotenv()
 
 api_key = os.getenv("API_KEY")
 model_key = os.getenv("MODEL_KEY")

@@ -62,3 +62,48 @@ If test worked correctly, we should get the following output:
 
 ![](images/test_onnx.png)
 
+The test file will report failure if the predicted & expected classess do not match.
+
+
+## Test the deployed model on Banana dev using the API using `test_server.py`
+
+To test the model, run the supplied `test_server.py` with arguments like:
+
+```shell
+python test_server.py "images/n01440764_tench.jpeg"
+```
+We get the following output:
+
+![](images/test_server_file.png)
+
+We can also run tests along with the file with a `--tests` argument:
+
+```shell
+python test_server.py "images/n01440764_tench.jpeg" --test
+```
+
+![](images/test_server_file_with_tests.png)
+
+The API is also compatiable with URL of images, for example we provide image of an Arctic Fox from Wikipedia:
+
+```shell
+python test_server.py "https://upload.wikimedia.org/wikipedia/commons/8/83/Iceland-1979445_%28cropped_3%29.jpg"
+```
+
+The classification is done correctly:
+
+![](images/test_server_url.png)
+
+
+
+## Deploying the app to **banana.dev**
+
+After adding all the modules as given in the instructions, adding the banana.dev authentication with Github repository, modifying the Dockerfile & committing changes to repo, our app is deployed everytime there is a push to the repo.
+
+We can see status of running app:
+
+![](images/banana-dev-status.png)
+
+We can see status of deployment in the BUILD LOGS section:
+
+![](images/banana_build.png)

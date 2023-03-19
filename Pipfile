@@ -16,6 +16,7 @@ onnxoptimizer = "*"
 onnx-simplifier = "*"
 onnxruntime = "*"
 banana-dev = "*"
+python-dotenv = "*"
 
 [dev-packages]
 
