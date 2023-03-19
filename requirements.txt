@@ -49,7 +49,7 @@ sanic-routing==22.3.0
 six==1.16.0
 sympy==1.11.1
 tokenizers==0.13.2
-torch==2.0.0
+torch
 torchvision==0.10.0
 tqdm==4.65.0
 transformers==4.27.1
