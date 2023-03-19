@@ -5,6 +5,7 @@ import numpy as np
 from urllib.parse import urlparse
 from io import BytesIO
 import requests
+import os
 
 model = OnnxModel('model/model_optimized.onnx')
 preprocessor = Preprocessor()
