@@ -3,6 +3,12 @@ import json
 import argparse
 import time
 import os
+from dotenv import load_env
+
+load_env()
+
+api_key = os.getenv("API_KEY")
+model_key = os.getenv("MODEL_KEY")
 
 # Set up the command-line arguments
 parser = argparse.ArgumentParser(description="Test deployment on the Banana dev server.")
@@ -11,8 +17,6 @@ parser.add_argument("-t", "--test", help="Run preset custom tests.", action="sto
 args = parser.parse_args()
 
 # Set up the API request data
-model_key = "6f0ab264-572f-43fd-a9c6-f451a49511c9"
-api_key = "1e09c5bc-f7d2-45bb-9935-10705e4fd4bb"
 image_path = args.image_path
 data = {
     "apiKey": api_key,
