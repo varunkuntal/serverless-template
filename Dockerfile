@@ -14,12 +14,7 @@ RUN pip3 install -r requirements.txt
 # We add the banana boilerplate here
 COPY __init__.py server.py model.py convert_to_onnx.py pytorch_model.py /
 ADD images/ model/ /
-COPY . .
-
-# Add your model weight files 
-# (in this case we have a python script)
-# ADD download.py .
-# RUN python3 download.py
+# COPY . .
 
 
 # Add your custom app code, init() and inference()

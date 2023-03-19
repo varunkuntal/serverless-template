@@ -23,7 +23,7 @@ class Preprocessor:
         self.img_size = img_size
         self.classifier = Classifier()
         
-    def __call__(self, img: Image.Image) -> Tensor:
+    def __call__(self, img: Image.Image) -> np.ndarray:
         img = self.classifier.preprocess_numpy(img)
         img = np.expand_dims(img, axis=0)
         return img

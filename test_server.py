@@ -1,35 +1,78 @@
 import requests
+import json
 import argparse
-import os
 import time
-import numpy as np
+import os
 
-import requests
-from PIL import Image
-from app import classify_image
+# Set up the command-line arguments
+parser = argparse.ArgumentParser(description="Test deployment on the Banana dev server.")
+parser.add_argument("image_path", help="Path or URL of the image to classify.")
+parser.add_argument("-t", "--test", help="Run preset custom tests.", action="store_true")
+args = parser.parse_args()
+
+# Set up the API request data
+model_key = "6f0ab264-572f-43fd-a9c6-f451a49511c9"
+api_key = "1e09c5bc-f7d2-45bb-9935-10705e4fd4bb"
+image_path = args.image_path
+data = {
+    "apiKey": api_key,
+    "modelKey": model_key,
+    "modelInputs": {
+        "url": image_path
+    }
+}
+json_data = json.dumps(data)
+
+# Send the API request and time the call
+start_time = time.time()
+url = "https://api.banana.dev/start/v4/"
+headers = {'Content-Type': 'application/json'}
+response = requests.post(url, headers=headers, data=json_data)
+end_time = time.time()
+call_time = end_time - start_time
+
+# Parse the prediction result
+result = json.loads(response.content.decode('utf-8'))
+prediction = result['modelOutputs']
+
+# Print the prediction and call time
+print(f"Prediction: {prediction}")
+print(f"Call time: {call_time} seconds")
+
+# Run preset custom tests, if specified
+if args.test:
+    # Set up the test images and expected results
+    test_images = ["images/n01440764_tench.jpeg",
+                   "images/n01667114_mud_turtle.JPEG"]
+    expected_results = ["tench", "mud turtle"]
+
+    # Loop through the test images and compare the results to the expected results
+    for i, image_url in enumerate(test_images):
+        # Set up the API request data
+        data = {
+            "apiKey": api_key,
+            "modelKey": model_key,
+            "modelInputs": {
+                "url": image_url
+            }
+        }
+        json_data = json.dumps(data)
+
+        # Send the API request and time the call
+        start_time = time.time()
+        response = requests.post(url, headers=headers, data=json_data)
+        end_time = time.time()
+        call_time = end_time - start_time
+
+        # Parse the prediction result
+        result = json.loads(response.content.decode('utf-8'))
+        prediction = result['modelOutputs'][0]['predictions']
 
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Test server for ONNX model deployment')
-    parser.add_argument('image_path', type=str, help='Path or URL to the image to classify')
-    parser.add_argument('--api_url', type=str, default='http://banana-dev.example.com/predict', help='URL of the deployed ONNX model API')
-    parser.add_argument('--test', action='store_true', help='Run preset tests')
-    args = parser.parse_args()
-
-    if args.test:
-        images = [
-            ('images/n01440764_tench.jpeg', 'tench'),
-            ('images/n01667114_mud_turtle.JPEG', 'mud turtle'),
-        ]
-        for image_path, expected_class in images:
-            class_name = classify_image(image_path)
-            print(f'Image: {image_path}')
-            print(f'Expected Class: {expected_class}')
-            print(f'Classified As: {class_name}')
-            print('-' * 50)
-
-    start_time = time.time()
-    class_name = classify_image(args.image_path)
-    end_time = time.time()
-    print(f'Classified image as: {class_name}')
-    print(f'Time taken: {end_time - start_time:.4f}s')
+        # Compare the prediction to the expected result
+        if prediction == expected_results[i]:
+            print(f"Test {i+1}: PASSED")
+        else:
+            print(f"Test {i+1}: FAILED")
+        print(f"Prediction: {prediction}")
+        print(f"Call time: {call_time} seconds")

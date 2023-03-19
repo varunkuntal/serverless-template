@@ -47,10 +47,14 @@ def test_onnx_model():
             if predicted_classes[0] != 0:
                 all_tests_passed = False
                 print(f"Test failed: {image_file} belongs to class id {predicted_classes[0]} instead of 0")
+            else:
+                print(f"Test Passed: {image_file} belongs to class id {predicted_classes[0]}")
         if image_file == "images/n01667114_mud_turtle.JPEG":
             if predicted_classes[0] != 35:
                 all_tests_passed = False
                 print(f"Test failed: {image_file} belongs to class id {predicted_classes[0]} instead of 35")
+            else:
+                print(f"Test Passed: {image_file} belongs to class id {predicted_classes[0]}")
 
         # Raise an exception if any of the tests fail
         if not all_tests_passed:
