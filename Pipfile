@@ -15,6 +15,7 @@ cmake = "*"
 onnxoptimizer = "*"
 onnx-simplifier = "*"
 onnxruntime = "*"
+banana-dev = "*"
 
 [dev-packages]
 
